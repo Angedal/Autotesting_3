@@ -1,5 +1,6 @@
 package ru.netology.web;
 
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,7 +19,7 @@ public class OrderCardTest {
 
     @BeforeAll
     static void setUpAll() {
-        System.setProperty("webdriver.chrome.driver", "driver/win/chromedriver.exe");
+        WebDriverManager.chromedriver().setup();
     }
 
     @BeforeEach
@@ -28,6 +29,7 @@ public class OrderCardTest {
         options.addArguments("--no-sandbox");
         options.addArguments("--headless");
         driver = new ChromeDriver();
+        driver.get("http://localhost:9999");
     }
 
     @AfterEach
@@ -38,8 +40,6 @@ public class OrderCardTest {
 
     @Test
     void shouldTestAlfaBankCard_1() {
-        driver.get("http://localhost:7777");
-
         WebElement name = driver.findElement(By.cssSelector("[data-test-id='name'] input"));
         name.sendKeys("Иванов Иван");
 
@@ -57,8 +57,6 @@ public class OrderCardTest {
 
     @Test
     void shouldTestAlfaBankCard_2() {
-        driver.get("http://localhost:7777");
-
         WebElement name = driver.findElement(By.cssSelector("[data-test-id='name'] input"));
         name.sendKeys("Иванов-Петров");
 
@@ -76,7 +74,6 @@ public class OrderCardTest {
 
     @Test
     void shouldTestAlfaBankCard_3() {
-        driver.get("http://localhost:7777");
 
         WebElement name = driver.findElement(By.cssSelector("[data-test-id='name'] input"));
         name.sendKeys("Иванов-Петров Александр");
