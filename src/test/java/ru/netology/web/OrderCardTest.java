@@ -39,7 +39,7 @@ public class OrderCardTest {
     }
 
     @Test
-    void shouldTestAlfaBankCard_1() {
+    void shouldTestAlfaBankCard_AllFieldsCorrect() {
         WebElement name = driver.findElement(By.cssSelector("[data-test-id='name'] input"));
         name.sendKeys("Иванов Иван");
 
@@ -47,16 +47,14 @@ public class OrderCardTest {
         phone.sendKeys("+79280000000");
 
         driver.findElement(By.className("checkbox__box")).click();
-
         driver.findElement(By.className("button__content")).click();
 
         String textOfSuccess = driver.findElement(By.className("paragraph")).getText();
-
         assertEquals("Ваша заявка успешно отправлена! Наш менеджер свяжется с вами в ближайшее время.", textOfSuccess.trim());
     }
 
     @Test
-    void shouldTestAlfaBankCard_2() {
+    void shouldTestAlfaBankCard_NameWithHyphen() {
         WebElement name = driver.findElement(By.cssSelector("[data-test-id='name'] input"));
         name.sendKeys("Иванов-Петров");
 
@@ -64,29 +62,91 @@ public class OrderCardTest {
         phone.sendKeys("+79008884152");
 
         driver.findElement(By.className("checkbox__box")).click();
-
         driver.findElement(By.className("button__content")).click();
 
         String textOfSuccess = driver.findElement(By.className("paragraph")).getText();
-
         assertEquals("Ваша заявка успешно отправлена! Наш менеджер свяжется с вами в ближайшее время.", textOfSuccess.trim());
     }
 
     @Test
-    void shouldTestAlfaBankCard_3() {
+    void shouldTestAlfaBankCard_WrongName() {
 
         WebElement name = driver.findElement(By.cssSelector("[data-test-id='name'] input"));
-        name.sendKeys("Иванов-Петров Александр");
+        name.sendKeys("fdfdfdf");
 
         WebElement phone = driver.findElement(By.cssSelector("[data-test-id='phone'] input"));
         phone.sendKeys("+79008855152");
 
         driver.findElement(By.className("checkbox__box")).click();
+        driver.findElement(By.className("button__content")).click();
+
+        String textOfSub = driver.findElement(By.cssSelector("[data-test-id='name'] .input__sub")).getText();
+        assertEquals("Имя и Фамилия указаные неверно. Допустимы только русские буквы, пробелы и дефисы.", textOfSub);
+    }
+
+    @Test
+    void shouldTestAlfaBankCard_WrongPhone() {
+
+        WebElement name = driver.findElement(By.cssSelector("[data-test-id='name'] input"));
+        name.sendKeys("Иванов-Петров Александр");
+
+        WebElement phone = driver.findElement(By.cssSelector("[data-test-id='phone'] input"));
+        phone.sendKeys("+79008855");
+
+        driver.findElement(By.className("checkbox__box")).click();
+        driver.findElement(By.className("button__content")).click();
+
+        String textOfSub = driver.findElement(By.cssSelector("[data-test-id='phone'] .input__sub")).getText();
+        assertEquals("Телефон указан неверно. Должно быть 11 цифр, например, +79012345678.", textOfSub);
+    }
+
+    @Test
+    void shouldTestAlfaBankCard_NoAgreement() {
+
+        WebElement name = driver.findElement(By.cssSelector("[data-test-id='name'] input"));
+        name.sendKeys("Иванов Иван");
+
+        WebElement phone = driver.findElement(By.cssSelector("[data-test-id='phone'] input"));
+        phone.sendKeys("+79278240000");
 
         driver.findElement(By.className("button__content")).click();
 
-        String textOfSuccess = driver.findElement(By.className("paragraph")).getText();
+        WebElement invalidCheckboxClass = driver.findElement(By.cssSelector("[data-test-id='agreement']"));
 
-        assertEquals("Ваша заявка успешно отправлена! Наш менеджер свяжется с вами в ближайшее время.", textOfSuccess.trim());
+        assertEquals(invalidCheckboxClass.getAttribute("class"), "checkbox checkbox_size_m checkbox_theme_alfa-on-white input_invalid" );
     }
+
+    @Test
+    void shouldTestAlfaBankCard_NoName() {
+
+        WebElement name = driver.findElement(By.cssSelector("[data-test-id='name'] input"));
+        name.sendKeys("");
+
+        WebElement phone = driver.findElement(By.cssSelector("[data-test-id='phone'] input"));
+        phone.sendKeys("+79278240000");
+
+        driver.findElement(By.className("checkbox__box")).click();
+        driver.findElement(By.className("button__content")).click();
+
+        String textOfSub = driver.findElement(By.cssSelector("[data-test-id='name'] .input__sub")).getText();
+        assertEquals("Поле обязательно для заполнения", textOfSub);
+    }
+
+    @Test
+    void shouldTestAlfaBankCard_NoPhone() {
+
+        WebElement name = driver.findElement(By.cssSelector("[data-test-id='name'] input"));
+        name.sendKeys("Иванов Иван");
+
+        WebElement phone = driver.findElement(By.cssSelector("[data-test-id='phone'] input"));
+        phone.sendKeys("");
+
+        driver.findElement(By.className("checkbox__box")).click();
+        driver.findElement(By.className("button__content")).click();
+
+        String textOfSub = driver.findElement(By.cssSelector("[data-test-id='phone'] .input__sub")).getText();
+        assertEquals("Поле обязательно для заполнения", textOfSub);
+    }
+
+
 }
