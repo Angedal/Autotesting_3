@@ -13,6 +13,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class OrderCardTest {
     private WebDriver driver;
@@ -39,37 +40,37 @@ public class OrderCardTest {
     }
 
     @Test
-    void shouldTestAlfaBankCard_AllFieldsCorrect() {
+    void shouldTestWithCorrectFields() {
         WebElement name = driver.findElement(By.cssSelector("[data-test-id='name'] input"));
         name.sendKeys("Иванов Иван");
 
         WebElement phone = driver.findElement(By.cssSelector("[data-test-id='phone'] input"));
         phone.sendKeys("+79280000000");
 
-        driver.findElement(By.className("checkbox__box")).click();
+        driver.findElement(By.cssSelector("[data-test-id='agreement']")).click();
         driver.findElement(By.className("button__content")).click();
 
-        String textOfSuccess = driver.findElement(By.className("paragraph")).getText();
+        String textOfSuccess = driver.findElement(By.cssSelector("[data-test-id='order-success']")).getText();
         assertEquals("Ваша заявка успешно отправлена! Наш менеджер свяжется с вами в ближайшее время.", textOfSuccess.trim());
     }
 
     @Test
-    void shouldTestAlfaBankCard_NameWithHyphen() {
+    void shouldTestWithNameAndHyphen() {
         WebElement name = driver.findElement(By.cssSelector("[data-test-id='name'] input"));
         name.sendKeys("Иванов-Петров");
 
         WebElement phone = driver.findElement(By.cssSelector("[data-test-id='phone'] input"));
         phone.sendKeys("+79008884152");
 
-        driver.findElement(By.className("checkbox__box")).click();
+        driver.findElement(By.cssSelector("[data-test-id='agreement']")).click();
         driver.findElement(By.className("button__content")).click();
 
-        String textOfSuccess = driver.findElement(By.className("paragraph")).getText();
+        String textOfSuccess = driver.findElement(By.cssSelector("[data-test-id='order-success']")).getText();
         assertEquals("Ваша заявка успешно отправлена! Наш менеджер свяжется с вами в ближайшее время.", textOfSuccess.trim());
     }
 
     @Test
-    void shouldTestAlfaBankCard_WrongName() {
+    void shouldTestWithWrongName() {
 
         WebElement name = driver.findElement(By.cssSelector("[data-test-id='name'] input"));
         name.sendKeys("fdfdfdf");
@@ -77,15 +78,15 @@ public class OrderCardTest {
         WebElement phone = driver.findElement(By.cssSelector("[data-test-id='phone'] input"));
         phone.sendKeys("+79008855152");
 
-        driver.findElement(By.className("checkbox__box")).click();
+        driver.findElement(By.cssSelector("[data-test-id='agreement']")).click();
         driver.findElement(By.className("button__content")).click();
 
-        String textOfSub = driver.findElement(By.cssSelector("[data-test-id='name'] .input__sub")).getText();
+        String textOfSub = driver.findElement(By.cssSelector("[data-test-id='name'].input_invalid .input__sub")).getText();
         assertEquals("Имя и Фамилия указаные неверно. Допустимы только русские буквы, пробелы и дефисы.", textOfSub);
     }
 
     @Test
-    void shouldTestAlfaBankCard_WrongPhone() {
+    void shouldTestWithWrongPhone() {
 
         WebElement name = driver.findElement(By.cssSelector("[data-test-id='name'] input"));
         name.sendKeys("Иванов-Петров Александр");
@@ -93,15 +94,15 @@ public class OrderCardTest {
         WebElement phone = driver.findElement(By.cssSelector("[data-test-id='phone'] input"));
         phone.sendKeys("+79008855");
 
-        driver.findElement(By.className("checkbox__box")).click();
+        driver.findElement(By.cssSelector("[data-test-id='agreement']")).click();
         driver.findElement(By.className("button__content")).click();
 
-        String textOfSub = driver.findElement(By.cssSelector("[data-test-id='phone'] .input__sub")).getText();
+        String textOfSub = driver.findElement(By.cssSelector("[data-test-id='phone'].input_invalid .input__sub")).getText();
         assertEquals("Телефон указан неверно. Должно быть 11 цифр, например, +79012345678.", textOfSub);
     }
 
     @Test
-    void shouldTestAlfaBankCard_NoAgreement() {
+    void shouldTestWithoutAgreement() {
 
         WebElement name = driver.findElement(By.cssSelector("[data-test-id='name'] input"));
         name.sendKeys("Иванов Иван");
@@ -112,12 +113,11 @@ public class OrderCardTest {
         driver.findElement(By.className("button__content")).click();
 
         WebElement invalidCheckboxClass = driver.findElement(By.cssSelector("[data-test-id='agreement']"));
-
-        assertEquals(invalidCheckboxClass.getAttribute("class"), "checkbox checkbox_size_m checkbox_theme_alfa-on-white input_invalid" );
+        assertTrue(invalidCheckboxClass.getAttribute("class").contains("input_invalid"));
     }
 
     @Test
-    void shouldTestAlfaBankCard_NoName() {
+    void shouldTestWithoutName() {
 
         WebElement name = driver.findElement(By.cssSelector("[data-test-id='name'] input"));
         name.sendKeys("");
@@ -125,15 +125,15 @@ public class OrderCardTest {
         WebElement phone = driver.findElement(By.cssSelector("[data-test-id='phone'] input"));
         phone.sendKeys("+79278240000");
 
-        driver.findElement(By.className("checkbox__box")).click();
+        driver.findElement(By.cssSelector("[data-test-id='agreement']")).click();
         driver.findElement(By.className("button__content")).click();
 
-        String textOfSub = driver.findElement(By.cssSelector("[data-test-id='name'] .input__sub")).getText();
+        String textOfSub = driver.findElement(By.cssSelector("[data-test-id='name'].input_invalid .input__sub")).getText();
         assertEquals("Поле обязательно для заполнения", textOfSub);
     }
 
     @Test
-    void shouldTestAlfaBankCard_NoPhone() {
+    void shouldTestWithoutPhone() {
 
         WebElement name = driver.findElement(By.cssSelector("[data-test-id='name'] input"));
         name.sendKeys("Иванов Иван");
@@ -141,12 +141,10 @@ public class OrderCardTest {
         WebElement phone = driver.findElement(By.cssSelector("[data-test-id='phone'] input"));
         phone.sendKeys("");
 
-        driver.findElement(By.className("checkbox__box")).click();
+        driver.findElement(By.cssSelector("[data-test-id='agreement']")).click();
         driver.findElement(By.className("button__content")).click();
 
-        String textOfSub = driver.findElement(By.cssSelector("[data-test-id='phone'] .input__sub")).getText();
+        String textOfSub = driver.findElement(By.cssSelector("[data-test-id='phone'].input_invalid .input__sub")).getText();
         assertEquals("Поле обязательно для заполнения", textOfSub);
     }
-
-
 }
